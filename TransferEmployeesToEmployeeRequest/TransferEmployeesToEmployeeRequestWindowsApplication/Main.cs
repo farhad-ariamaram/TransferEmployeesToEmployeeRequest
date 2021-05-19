@@ -11,6 +11,7 @@ using TransferEmployeesToEmployeeRequestWindowsApplication.EmployReqModels;
 using TransferEmployeesToEmployeeRequestWindowsApplication.Models;
 using System.Threading;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace TransferEmployeesToEmployeeRequestWindowsApplication
 {
@@ -55,10 +56,10 @@ namespace TransferEmployeesToEmployeeRequestWindowsApplication
                 }
                 catch (Exception ex)
                 {
-
+                    await LogErrors(ex.ToString());
                 }
 
-                await Task.Delay(900000);
+                await Task.Delay(9000);
             }
         }
 
@@ -445,6 +446,14 @@ namespace TransferEmployeesToEmployeeRequestWindowsApplication
             #endregion
 
             return true;
+        }
+
+        private async static Task LogErrors(string error)
+        {
+            using (StreamWriter writetext = new StreamWriter("log.txt", true))
+            {
+                writetext.WriteLine(error + Environment.NewLine + "--------------------------------------------------------------------------------------------------");
+            }
         }
     }
 }
