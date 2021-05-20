@@ -12,6 +12,7 @@ using TransferEmployeesToEmployeeRequestWindowsApplication.Models;
 using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
+using Microsoft.EntityFrameworkCore;
 
 namespace TransferEmployeesToEmployeeRequestWindowsApplication
 {
@@ -54,7 +55,11 @@ namespace TransferEmployeesToEmployeeRequestWindowsApplication
                         }
                     }
 
-                    var notPublishedRequestedJobs = _db2.TblEmployeeRequestEmployeeRequests.Where(a => a.IsPublished == false && a.FldEmployeeRequestEmployeeRequestIsTransfered == true).ToList();
+                    var notPublishedRequestedJobs = _db2.TblEmployeeRequestEmployeeRequests
+                        .Where(a => a.IsPublished == false && a.FldEmployeeRequestEmployeeRequestIsTransfered == true)
+                        .Include(t => t.FldEmployeeRequestJobs)
+                        .Include(t => t.FldEmployeeRequestJobOnet)
+                        .Include(t => t.FldEmployeeRequestJobTamin).ToList();
 
                     if (notPublishedRequestedJobs.Any())
                     {
@@ -74,7 +79,7 @@ namespace TransferEmployeesToEmployeeRequestWindowsApplication
                     await LogErrors(ex.ToString());
                 }
 
-                await Task.Delay(9000);
+                await Task.Delay(900000);
             }
         }
 
