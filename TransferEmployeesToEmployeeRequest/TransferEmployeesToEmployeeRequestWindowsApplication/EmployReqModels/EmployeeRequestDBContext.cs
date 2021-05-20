@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using System.Configuration;
 
 #nullable disable
 
@@ -9,8 +8,6 @@ namespace TransferEmployeesToEmployeeRequestWindowsApplication.EmployReqModels
 {
     public partial class EmployeeRequestDBContext : DbContext
     {
-        string employRequestDbConnectionString = ConfigurationManager.ConnectionStrings["EmployeeRequestDB"].ConnectionString;
-
         public EmployeeRequestDBContext()
         {
         }
@@ -68,7 +65,8 @@ namespace TransferEmployeesToEmployeeRequestWindowsApplication.EmployReqModels
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(employRequestDbConnectionString);
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Server=.;Database=EmployeeRequestDB;Trusted_Connection=True;");
             }
         }
 

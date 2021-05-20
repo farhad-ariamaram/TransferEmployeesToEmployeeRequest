@@ -27,6 +27,7 @@ namespace TransferEmployeesToEmployeeRequestWindowsApplication.EmployReqModels
         public int? FldEmployeeRequestJobsId { get; set; }
         public DateTime? FldEmployeeRequestEmployeeRequestApplicationDate { get; set; }
         public int? FldEmployeeRequestJobTitleFromId { get; set; }
+        public bool IsPublished { get; set; }
 
         public virtual TblJob FldEmployeeRequestJobOnet { get; set; }
         public virtual TblJobTamin FldEmployeeRequestJobTamin { get; set; }

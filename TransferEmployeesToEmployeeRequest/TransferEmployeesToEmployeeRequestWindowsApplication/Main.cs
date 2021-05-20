@@ -53,6 +53,21 @@ namespace TransferEmployeesToEmployeeRequestWindowsApplication
                             }
                         }
                     }
+
+                    var notPublishedRequestedJobs = _db2.TblEmployeeRequestEmployeeRequests.Where(a => a.IsPublished == false && a.FldEmployeeRequestEmployeeRequestIsTransfered == true).ToList();
+
+                    if (notPublishedRequestedJobs.Any())
+                    {
+                        foreach (var item in notPublishedRequestedJobs)
+                        {
+                            if (TransferJob(item))
+                            {
+                                item.IsPublished = true;
+                                _db2.TblEmployeeRequestEmployeeRequests.Update(item);
+                                _db2.SaveChanges();
+                            }
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -443,6 +458,40 @@ namespace TransferEmployeesToEmployeeRequestWindowsApplication
 
                 _db2.SaveChanges();
             }
+            #endregion
+
+            return true;
+        }
+
+        private bool TransferJob(TblEmployeeRequestEmployeeRequest t)
+        {
+            #region TransferJob
+            string jobTitleFrom = null;
+            if (t.FldEmployeeRequestJobTitleFromId == 1)
+            {
+                jobTitleFrom = t.FldEmployeeRequestJobs.JobsName;
+            }
+            else if (t.FldEmployeeRequestJobTitleFromId == 2)
+            {
+                jobTitleFrom = t.FldEmployeeRequestJobTamin.FldTaminJobName;
+            }
+            else
+            {
+                jobTitleFrom = t.FldEmployeeRequestJobOnet.FldJobName;
+            }
+
+            Models.TblJob newJob = new Models.TblJob()
+            {
+                JobTitle = jobTitleFrom,
+                IsActive = true,
+                StartDate = t.FldEmployeeRequestEmployeeRequestStartDate,
+                EndDate = t.FldEmployeeRequestEmployeeRequestEndDate,
+                NeedMan = t.FldEmployeeRequestEmployeeRequestNeedMan,
+                NeedWoman = t.FldEmployeeRequestEmployeeRequestNeedWoman,
+                Description = t.FldEmployeeRequestEmployeeRequestJobDescription
+            };
+            _db.TblJobs.Add(newJob);
+            _db.SaveChanges();
             #endregion
 
             return true;
