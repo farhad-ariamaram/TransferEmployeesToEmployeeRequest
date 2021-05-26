@@ -509,5 +509,10 @@ namespace TransferEmployeesToEmployeeRequestWindowsApplication
                 writetext.WriteLine(error + Environment.NewLine + "--------------------------------------------------------------------------------------------------");
             }
         }
+
+        private void Main_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
