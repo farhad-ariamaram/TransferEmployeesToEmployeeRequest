@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace TransferEmployeesToEmployeeRequestWindowsApplication
 {
@@ -38,9 +39,13 @@ namespace TransferEmployeesToEmployeeRequestWindowsApplication
             while (true)
             {
                 await Task.Delay(1000);
+
                 try
                 {
                     var notTransferedUsers = _db.TblUsers.Where(a => a.IsTransfered == false && a.TblPrimaryInformations.FirstOrDefault().TrackNo != null).ToList();
+
+                    transferQueue.Text = "" + notTransferedUsers.Count();
+                    allTransfers.Text = int.Parse(allTransfers.Text) + notTransferedUsers.Count() + "";
 
                     if (notTransferedUsers.Any())
                     {
@@ -51,9 +56,16 @@ namespace TransferEmployeesToEmployeeRequestWindowsApplication
                                 item.IsTransfered = true;
                                 _db.TblUsers.Update(item);
                                 _db.SaveChanges();
+                                PersianCalendar pc = new PersianCalendar();
+                                DateTime date = DateTime.Now;
+                                string mydate = string.Format("{0}/{1}/{2}", pc.GetYear(date), pc.GetMonth(date), pc.GetDayOfMonth(date)) + " " + date.ToShortTimeString();
+                                lastTransfer.Text = mydate;
                             }
                         }
                     }
+
+
+
 
                     var notPublishedRequestedJobs = _db2.TblEmployeeRequestEmployeeRequests
                         .Where(a => a.IsPublished == false && a.FldEmployeeRequestEmployeeRequestIsTransfered == true)
@@ -77,6 +89,7 @@ namespace TransferEmployeesToEmployeeRequestWindowsApplication
                 catch (Exception ex)
                 {
                     await LogErrors(ex.ToString());
+                    errorLog.Text += ex.ToString() + "---------------------------------------------------" + Environment.NewLine;
                 }
 
                 await Task.Delay(900000);
@@ -508,11 +521,6 @@ namespace TransferEmployeesToEmployeeRequestWindowsApplication
             {
                 writetext.WriteLine(error + Environment.NewLine + "--------------------------------------------------------------------------------------------------");
             }
-        }
-
-        private void Main_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }
